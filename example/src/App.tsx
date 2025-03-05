@@ -4,7 +4,16 @@ import { NativeViewsWorkshopsView } from 'react-native-native-views-workshops';
 export default function App() {
   return (
     <View style={styles.container}>
-      <NativeViewsWorkshopsView style={styles.box} mapType="hybrid" />
+      <NativeViewsWorkshopsView
+        style={styles.box}
+        mapType="hybrid"
+        onPress={(event) => {
+          console.log('onPress', event.nativeEvent);
+        }}
+        onRegionChange={(event) => {
+          console.log('onRegionChange', event.nativeEvent);
+        }}
+      />
     </View>
   );
 }

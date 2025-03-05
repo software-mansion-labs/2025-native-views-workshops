@@ -33,9 +33,52 @@ using namespace facebook::react;
     _view = [MKMapView new];
 
     self.contentView = _view;
+    
+    UITapGestureRecognizer *tapRecognizer = [
+      [UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)
+    ];
+    tapRecognizer.numberOfTapsRequired = 1;
+    tapRecognizer.numberOfTouchesRequired = 1;
+    [_view addGestureRecognizer:tapRecognizer];
+
+    UIPanGestureRecognizer *panRecognizer = [
+      [UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)
+    ];
+    panRecognizer.delegate = self;
+    [_view addGestureRecognizer:panRecognizer];
   }
 
   return self;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+  return YES;
+}
+
+- (void)handleTap:(UITapGestureRecognizer *)recognizer
+{
+  CLLocationCoordinate2D point = [self getCoordinates: recognizer];
+  std::dynamic_pointer_cast<const facebook::react::NativeViewsWorkshopsViewEventEmitter>(_eventEmitter)
+    ->onPress({
+      .latitude = point.latitude,
+      .longitude = point.longitude
+    });
+}
+
+- (void)handlePan:(UIPanGestureRecognizer *)recognizer
+{
+  CLLocationCoordinate2D point = [self getCoordinates: recognizer];
+  std::dynamic_pointer_cast<const facebook::react::NativeViewsWorkshopsViewEventEmitter>(_eventEmitter)
+    ->onRegionChange({
+      .latitude = point.latitude,
+      .longitude = point.longitude
+    });
+}
+
+- (CLLocationCoordinate2D)getCoordinates:(UIGestureRecognizer *)recognizer
+{
+  CGPoint point = [recognizer locationInView:_view];
+  return [_view convertPoint:point toCoordinateFromView:_view];
 }
 
 - (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
