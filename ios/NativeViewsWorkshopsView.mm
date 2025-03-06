@@ -101,6 +101,19 @@ static inline MKMapType parseMapType(const NativeViewsWorkshopsViewMapType &valu
   }
 }
 
+- (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args
+{
+  RCTNativeViewsWorkshopsViewHandleCommand(self, commandName, args);
+}
+
+- (void)moveTo:(float)latitude longitude:(float)longitude animated:(BOOL)animated
+{
+  CLLocationCoordinate2D center;
+  center.latitude = latitude;
+  center.longitude = longitude;
+  [_view setCenterCoordinate:center animated:animated];
+}
+
 Class<RCTComponentViewProtocol> NativeViewsWorkshopsViewCls(void)
 {
     return NativeViewsWorkshopsView.class;
