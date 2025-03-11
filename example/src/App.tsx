@@ -27,7 +27,9 @@ export default function App() {
           console.log('onRegionChange', event.nativeEvent);
         }}
       />
-      <Button title="moveTo" onPress={handleMoveTo} />
+      <View style={styles.buttonBar}>
+        <Button title="moveTo" onPress={handleMoveTo} />
+      </View>
     </View>
   );
 }
@@ -37,10 +39,16 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingBottom: 30,
   },
   box: {
-    width: 300,
-    height: 300,
-    marginVertical: 20,
+    width: '100%',
+    flex: 1,
+  },
+  buttonBar: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingTop: 20,
   },
 });
