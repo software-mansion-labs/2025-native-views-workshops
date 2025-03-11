@@ -42,8 +42,10 @@ using namespace facebook::react;
     const auto &newViewProps = *std::static_pointer_cast<NativeViewsWorkshopsViewProps const>(props);
 
     if (oldViewProps.color != newViewProps.color) {
-        NSString * colorToConvert = [[NSString alloc] initWithUTF8String: newViewProps.color.c_str()];
-        [_view setBackgroundColor:[self hexStringToColor:colorToConvert]];
+      if (newViewProps.color.compare("green")) {
+        auto green = [UIColor colorWithRed:50 / 255.0f green:168 / 255.0f blue:82 / 255.0f alpha:1.0f];
+        [_view setBackgroundColor:green];
+      }
     }
 
     [super updateProps:props oldProps:oldProps];
@@ -52,20 +54,6 @@ using namespace facebook::react;
 Class<RCTComponentViewProtocol> NativeViewsWorkshopsViewCls(void)
 {
     return NativeViewsWorkshopsView.class;
-}
-
-- hexStringToColor:(NSString *)stringToConvert
-{
-    NSString *noHashString = [stringToConvert stringByReplacingOccurrencesOfString:@"#" withString:@""];
-    NSScanner *stringScanner = [NSScanner scannerWithString:noHashString];
-
-    unsigned hex;
-    if (![stringScanner scanHexInt:&hex]) return nil;
-    int r = (hex >> 16) & 0xFF;
-    int g = (hex >> 8) & 0xFF;
-    int b = (hex) & 0xFF;
-
-    return [UIColor colorWithRed:r / 255.0f green:g / 255.0f blue:b / 255.0f alpha:1.0f];
 }
 
 @end
