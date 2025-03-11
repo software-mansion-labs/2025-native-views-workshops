@@ -5,7 +5,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NativeViewsWorkshopsView : RCTViewComponentView <UIGestureRecognizerDelegate>
+@interface NativeViewsWorkshopsView : RCTViewComponentView
 @end
 
 NS_ASSUME_NONNULL_END

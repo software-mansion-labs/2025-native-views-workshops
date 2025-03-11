@@ -19,12 +19,9 @@ export default function App() {
       <NativeViewsWorkshopsView
         ref={viewRef}
         style={styles.box}
-        mapType="hybrid"
+        mapType="standard"
         onPress={(event) => {
           console.log('onPress', event.nativeEvent);
-        }}
-        onRegionChange={(event) => {
-          console.log('onRegionChange', event.nativeEvent);
         }}
       />
       <View style={styles.buttonBar}>

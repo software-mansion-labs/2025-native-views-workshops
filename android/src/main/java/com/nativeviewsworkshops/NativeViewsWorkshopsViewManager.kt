@@ -1,14 +1,9 @@
 package com.nativeviewsworkshops
 
-import com.facebook.react.bridge.ReactContext
-import com.facebook.react.bridge.WritableMap
-import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
-import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.ViewManagerDelegate
-import com.facebook.react.uimanager.events.Event
 import com.facebook.react.viewmanagers.NativeViewsWorkshopsViewManagerDelegate
 import com.facebook.react.viewmanagers.NativeViewsWorkshopsViewManagerInterface
 import org.maplibre.android.MapLibre

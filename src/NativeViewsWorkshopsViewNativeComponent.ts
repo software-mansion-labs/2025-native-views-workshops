@@ -4,13 +4,12 @@ import codegenNativeComponent, {
 import type { ViewProps } from 'react-native';
 import type {
   BubblingEventHandler,
-  DirectEventHandler,
   Float,
   WithDefault,
 } from 'react-native/Libraries/Types/CodegenTypes';
 import codegenNativeCommands from 'react-native/Libraries/Utilities/codegenNativeCommands';
 
-export type MapType = 'standard' | 'satellite' | 'hybrid';
+export type MapType = 'standard' | 'satellite';
 
 export type Coordinates = {
   latitude: Float;
@@ -20,7 +19,6 @@ export type Coordinates = {
 interface NativeProps extends ViewProps {
   mapType?: WithDefault<MapType, 'standard'>;
   onPress?: BubblingEventHandler<Coordinates>;
-  onRegionChange?: DirectEventHandler<Coordinates>;
 }
 
 export default codegenNativeComponent<NativeProps>('NativeViewsWorkshopsView');

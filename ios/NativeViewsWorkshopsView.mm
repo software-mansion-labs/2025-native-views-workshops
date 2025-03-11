@@ -34,42 +34,18 @@ using namespace facebook::react;
 
     self.contentView = _view;
     
-    UITapGestureRecognizer *tapRecognizer = [
-      [UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)
-    ];
-    tapRecognizer.numberOfTapsRequired = 1;
-    tapRecognizer.numberOfTouchesRequired = 1;
+    auto tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [_view addGestureRecognizer:tapRecognizer];
-
-    UIPanGestureRecognizer *panRecognizer = [
-      [UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)
-    ];
-    panRecognizer.delegate = self;
-    [_view addGestureRecognizer:panRecognizer];
   }
 
   return self;
 }
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-  return YES;
-}
-
 - (void)handleTap:(UITapGestureRecognizer *)recognizer
 {
-  CLLocationCoordinate2D point = [self getCoordinates: recognizer];
+  CLLocationCoordinate2D point = [self getCoordinates:recognizer];
   std::dynamic_pointer_cast<const facebook::react::NativeViewsWorkshopsViewEventEmitter>(_eventEmitter)
     ->onPress({
-      .latitude = point.latitude,
-      .longitude = point.longitude
-    });
-}
-
-- (void)handlePan:(UIPanGestureRecognizer *)recognizer
-{
-  CLLocationCoordinate2D point = [self getCoordinates: recognizer];
-  std::dynamic_pointer_cast<const facebook::react::NativeViewsWorkshopsViewEventEmitter>(_eventEmitter)
-    ->onRegionChange({
       .latitude = point.latitude,
       .longitude = point.longitude
     });
@@ -97,7 +73,6 @@ static inline MKMapType parseMapType(const NativeViewsWorkshopsViewMapType &valu
   switch (value) {
     case NativeViewsWorkshopsViewMapType::Standard: return MKMapTypeStandard;
     case NativeViewsWorkshopsViewMapType::Satellite: return MKMapTypeSatellite;
-    case NativeViewsWorkshopsViewMapType::Hybrid: return MKMapTypeHybrid;
   }
 }
 

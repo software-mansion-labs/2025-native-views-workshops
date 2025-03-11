@@ -7,18 +7,12 @@ import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.events.Event
-import org.maplibre.android.camera.CameraPosition
-import org.maplibre.android.camera.CameraUpdate
 import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.geometry.LatLng
-import org.maplibre.android.gestures.MoveGestureDetector
 import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.maps.MapView
 
-class NativeViewsWorkshopsView :
-  MapView,
-  MapLibreMap.OnMoveListener,
-  MapLibreMap.OnMapClickListener
+class NativeViewsWorkshopsView : MapView, MapLibreMap.OnMapClickListener
 {
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -33,10 +27,7 @@ class NativeViewsWorkshopsView :
   private val streetStyle = "https://api.maptiler.com/maps/streets/style.json?key=$key"
 
   init {
-    getMapAsync { map ->
-      map.addOnMoveListener(this)
-      map.addOnMapClickListener(this)
-    }
+    getMapAsync { map -> map.addOnMapClickListener(this) }
     setStyle("standard")
   }
 
@@ -48,37 +39,16 @@ class NativeViewsWorkshopsView :
     }
   }
 
-  override fun onMoveBegin(data: MoveGestureDetector) {
-    onMove(data)
-  }
-
-  override fun onMove(data: MoveGestureDetector) {
-    getMapAsync { map ->
-      val position = map.cameraPosition.target
-      if (position != null) {
-        emitEvent(EventType.REGION_CHANGE, position)
-      }
-    }
-  }
-
-  override fun onMoveEnd(data: MoveGestureDetector) {
-    onMove(data)
-  }
-
-  override fun onMapClick(data: LatLng): Boolean {
-    emitEvent(EventType.PRESS, data)
-    return true
-  }
-
-  private fun emitEvent(eventType: EventType, position: LatLng) {
+  override fun onMapClick(position: LatLng): Boolean {
     val eventDispatcher =
       UIManagerHelper.getEventDispatcherForReactTag(context as ReactContext, id)
     val surfaceId: Int = UIManagerHelper.getSurfaceId(context)
     val data = WritableNativeMap()
     data.putDouble("latitude", position.latitude)
     data.putDouble("longitude", position.longitude)
-    val event = MapEvent(surfaceId, id, EventType.getName(eventType), data)
+    val event = MapEvent(surfaceId, id, "onPress", data)
     eventDispatcher!!.dispatchEvent(event)
+    return true
   }
 
   private class MapEvent(surfaceId: Int, viewId: Int, val name: String, val data: WritableMap)
@@ -90,20 +60,6 @@ class NativeViewsWorkshopsView :
 
     override fun getEventData(): WritableMap {
       return data
-    }
-  }
-
-  enum class EventType {
-    PRESS,
-    REGION_CHANGE;
-
-    companion object {
-      fun getName(type: EventType): String {
-        return when (type) {
-          PRESS -> "onPress"
-          REGION_CHANGE -> "onRegionChange"
-        }
-      }
     }
   }
 
