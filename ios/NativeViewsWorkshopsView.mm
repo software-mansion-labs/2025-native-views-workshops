@@ -16,12 +16,12 @@ using namespace facebook::react;
 @end
 
 @implementation NativeViewsWorkshopsView {
-    MKMapView * _view;
+  MKMapView * _view;
 }
 
 + (ComponentDescriptorProvider)componentDescriptorProvider
 {
-    return concreteComponentDescriptorProvider<NativeViewsWorkshopsViewComponentDescriptor>();
+  return concreteComponentDescriptorProvider<NativeViewsWorkshopsViewComponentDescriptor>();
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -59,14 +59,23 @@ using namespace facebook::react;
 
 - (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
 {
-    const auto &oldViewProps = *std::static_pointer_cast<NativeViewsWorkshopsViewProps const>(_props);
-    const auto &newViewProps = *std::static_pointer_cast<NativeViewsWorkshopsViewProps const>(props);
+  const auto &oldViewProps = *std::static_pointer_cast<NativeViewsWorkshopsViewProps const>(_props);
+  const auto &newViewProps = *std::static_pointer_cast<NativeViewsWorkshopsViewProps const>(props);
+  
+  if (oldViewProps.mapType != newViewProps.mapType) {
+    _view.mapType = parseMapType(newViewProps.mapType);
+  }
     
-    if (oldViewProps.mapType != newViewProps.mapType) {
-      _view.mapType = parseMapType(newViewProps.mapType);
-    }
+  auto oldPosition = oldViewProps.cameraCenter;
+  auto newPosition = newViewProps.cameraCenter;
+  if (oldPosition.latitude != newPosition.latitude && oldPosition.longitude != newPosition.longitude) {
+    MKCoordinateRegion region;
+    region.span = MKCoordinateSpanMake(0.1, 0.1);
+    region.center = CLLocationCoordinate2D(newPosition.latitude, newPosition.longitude);
+    [_view setRegion:region];
+  }
 
-    [super updateProps:props oldProps:oldProps];
+  [super updateProps:props oldProps:oldProps];
 }
 
 static inline MKMapType parseMapType(const NativeViewsWorkshopsViewMapType &value) {
@@ -87,6 +96,13 @@ static inline MKMapType parseMapType(const NativeViewsWorkshopsViewMapType &valu
   center.latitude = latitude;
   center.longitude = longitude;
   [_view setCenterCoordinate:center animated:animated];
+}
+
+- (void)addMarker:(float)latitude longitude:(float)longitude
+{
+  auto marker = [MKPointAnnotation new];
+  marker.coordinate = CLLocationCoordinate2D(latitude, longitude);
+  [_view addAnnotation:marker];
 }
 
 Class<RCTComponentViewProtocol> NativeViewsWorkshopsViewCls(void)

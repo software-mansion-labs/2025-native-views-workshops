@@ -19,6 +19,7 @@ export type Coordinates = {
 interface NativeProps extends ViewProps {
   mapType?: WithDefault<MapType, 'standard'>;
   onPress?: BubblingEventHandler<Coordinates>;
+  cameraCenter?: Coordinates;
 }
 
 export default codegenNativeComponent<NativeProps>('NativeViewsWorkshopsView');
@@ -31,8 +32,13 @@ interface NativeCommands {
     longitude: Float,
     animated?: boolean
   ) => void;
+  addMarker: (
+    viewRef: React.ElementRef<ViewType>,
+    latitude: Float,
+    longitude: Float
+  ) => void;
 }
 
 export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
-  supportedCommands: ['moveTo'],
+  supportedCommands: ['moveTo', 'addMarker'],
 });

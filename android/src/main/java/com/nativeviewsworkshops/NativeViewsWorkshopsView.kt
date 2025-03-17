@@ -2,15 +2,22 @@ package com.nativeviewsworkshops
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.core.content.res.ResourcesCompat
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.events.Event
+import org.maplibre.android.camera.CameraPosition
 import org.maplibre.android.camera.CameraUpdateFactory
+import org.maplibre.android.camera.CameraUpdateFactory.newCameraPosition
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.maps.MapView
+import org.maplibre.android.plugins.annotation.SymbolManager
+import org.maplibre.android.plugins.annotation.SymbolOptions
+import org.maplibre.android.utils.BitmapUtils
+
 
 class NativeViewsWorkshopsView : MapView, MapLibreMap.OnMapClickListener
 {
@@ -78,6 +85,35 @@ class NativeViewsWorkshopsView : MapView, MapLibreMap.OnMapClickListener
       } else {
         map.moveCamera(newCameraPosition)
       }
+    }
+  }
+
+  fun setCameraCenter(position: LatLng) {
+    getMapAsync { map ->
+      val cameraPosition: CameraPosition = CameraPosition.Builder()
+        .target(position)
+        .zoom(11.0)
+        .build()
+      map.moveCamera(newCameraPosition(cameraPosition))
+    }
+  }
+
+  fun addMarker(position: LatLng) {
+    getMapAsync { map ->
+      val drawable = ResourcesCompat.getDrawable(
+        this.resources,
+        org.maplibre.android.R.drawable.maplibre_marker_icon_default,
+        null
+      )
+      map.style?.addImage("icon", BitmapUtils.getBitmapFromDrawable(drawable)!!)
+
+      val symbolManager = map.style?.let { SymbolManager(this, map, it) }
+      val symbolOptions = SymbolOptions()
+        .withLatLng(position)
+        .withIconImage("icon")
+        .withIconSize(1.0f)
+      val symbol = symbolManager!!.create(symbolOptions)
+      symbolManager.update(symbol)
     }
   }
 }

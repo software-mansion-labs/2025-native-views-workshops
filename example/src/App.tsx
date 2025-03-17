@@ -3,6 +3,7 @@ import { View, StyleSheet, Button } from 'react-native';
 import {
   NativeViewsWorkshopsView,
   Commands,
+  type Coordinates,
 } from 'react-native-native-views-workshops';
 
 export default function App() {
@@ -14,6 +15,16 @@ export default function App() {
     }
   };
 
+  const addMarker = (position: Coordinates) => {
+    if (viewRef.current) {
+      Commands.addMarker(
+        viewRef.current,
+        position.latitude,
+        position.longitude
+      );
+    }
+  };
+
   return (
     <View style={styles.container}>
       <NativeViewsWorkshopsView
@@ -21,8 +32,9 @@ export default function App() {
         style={styles.box}
         mapType="standard"
         onPress={(event) => {
-          console.log('onPress', event.nativeEvent);
+          addMarker(event.nativeEvent);
         }}
+        cameraCenter={{ latitude: 50.04, longitude: 19.96 }}
       />
       <View style={styles.buttonBar}>
         <Button title="moveTo" onPress={handleMoveTo} />

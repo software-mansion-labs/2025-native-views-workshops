@@ -1,5 +1,6 @@
 package com.nativeviewsworkshops
 
+import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
@@ -43,5 +44,17 @@ class NativeViewsWorkshopsViewManager() : SimpleViewManager<NativeViewsWorkshops
 
   override fun moveTo(view: NativeViewsWorkshopsView?, latitude: Float, longitude: Float, animated: Boolean) {
     view?.moveTo(LatLng(latitude.toDouble(), longitude.toDouble()), animated)
+  }
+
+  override fun setCameraCenter(view: NativeViewsWorkshopsView?, value: ReadableMap?) {
+    val position = value?.let { LatLng(it.getDouble("latitude"), it.getDouble("longitude")) }
+    if (position != null) {
+      view?.setCameraCenter(position)
+    }
+  }
+
+  override fun addMarker(view: NativeViewsWorkshopsView?, latitude: Float, longitude: Float) {
+    val position = LatLng(latitude.toDouble(), longitude.toDouble())
+    view?.addMarker(position);
   }
 }
